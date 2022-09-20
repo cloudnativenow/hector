@@ -1,0 +1,10 @@
+---
+# This playbook installs the falcon agent on all servers.
+
+- name: Install Crowdstrike Falcon
+  hosts: all
+  remote_user: azureuser
+  become: yes
+
+  roles:
+    - falcon

@@ -1,47 +1,36 @@
-# Create Unique Resource Group Name
-# resource "random_pet" "rg-name" {
-#   length = 1
-# }
-
-# Create Resource Group
-# resource "azurerm_resource_group" "rg" {
-#   name = "pet-clinic-${random_pet.rg-name.id}-rg"
-#   location  = var.resource_group_location
-# }
-
 # Create Resource Group
 resource "azurerm_resource_group" "rg" {
-  name = "${var.cluster_name}-pet-clinic-rg"
+  name = "${var.instance_name}-midserver-rg"
   location  = var.resource_group_location
 }
 
 # Create virtual network
-resource "azurerm_virtual_network" "pet-clinic-vnet" {
-  name                = "pet-clinic-vnet"
+resource "azurerm_virtual_network" "midserver-vnet" {
+  name                = "midserver-vnet"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 }
 
 # Create subnet
-resource "azurerm_subnet" "pet-clinic-subnet" {
-  name                 = "pet-clinic-subnet"
+resource "azurerm_subnet" "midserver-subnet" {
+  name                 = "midserver-subnet"
   resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.pet-clinic-vnet.name
+  virtual_network_name = azurerm_virtual_network.midserver-vnet.name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
 # Create public IPs
-resource "azurerm_public_ip" "pet-clinic-pip" {
-  name                = "pet-clinic-pip"
+resource "azurerm_public_ip" "midserver-pip" {
+  name                = "midserver-pip"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
 }
 
 # Create Network Security Group and rule
-resource "azurerm_network_security_group" "pet-clinic-nsg" {
-  name                = "pet-clinic-nsg"
+resource "azurerm_network_security_group" "midserver-nsg" {
+  name                = "midserver-nsg"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   security_rule {
@@ -58,22 +47,22 @@ resource "azurerm_network_security_group" "pet-clinic-nsg" {
 }
 
 # Create network interface
-resource "azurerm_network_interface" "pet-clinic-nic" {
-  name                = "pet-clinic-nic"
+resource "azurerm_network_interface" "midserver-nic" {
+  name                = "midserver-nic"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   ip_configuration {
-    name                          = "pet-clinic-nic-config"
-    subnet_id                     = azurerm_subnet.pet-clinic-subnet.id
+    name                          = "midserver-nic-config"
+    subnet_id                     = azurerm_subnet.midserver-subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.pet-clinic-pip.id
+    public_ip_address_id          = azurerm_public_ip.midserver-pip.id
   }
 }
 
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "example" {
-  network_interface_id      = azurerm_network_interface.pet-clinic-nic.id
-  network_security_group_id = azurerm_network_security_group.pet-clinic-nsg.id
+  network_interface_id      = azurerm_network_interface.midserver-nic.id
+  network_security_group_id = azurerm_network_security_group.midserver-nsg.id
 }
 
 # Generate random text for a unique storage account name
@@ -86,7 +75,7 @@ resource "random_id" "randomId" {
 }
 
 # Create storage account for boot diagnostics
-resource "azurerm_storage_account" "pet-clinic-storage" {
+resource "azurerm_storage_account" "midserver-storage" {
   name                     = "diag${random_id.randomId.hex}"
   location                 = azurerm_resource_group.rg.location
   resource_group_name      = azurerm_resource_group.rg.name
@@ -101,14 +90,14 @@ resource "azurerm_storage_account" "pet-clinic-storage" {
 # }
 
 # Create virtual machine
-resource "azurerm_linux_virtual_machine" "pet-clinic-vm" {
-  name                  = "pet-clinic-vm"
+resource "azurerm_linux_virtual_machine" "midserver-vm" {
+  name                  = "midserver-vm"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.pet-clinic-nic.id]
+  network_interface_ids = [azurerm_network_interface.midserver-nic.id]
   size                  = "Standard_DS1_v2"
   os_disk {
-    name                 = "pet-clinic-os"
+    name                 = "midserver-os"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }
@@ -118,7 +107,7 @@ resource "azurerm_linux_virtual_machine" "pet-clinic-vm" {
     sku       = "8_5-gen2"
     version   = "latest"
   }
-  computer_name                   = "pet-clinic-vm"
+  computer_name                   = "midserver-vm"
   admin_username                  = "azureuser"
   disable_password_authentication = true
   admin_ssh_key {
@@ -127,6 +116,6 @@ resource "azurerm_linux_virtual_machine" "pet-clinic-vm" {
     public_key = file(var.public_key_path)
   }
   boot_diagnostics {
-    storage_account_uri = azurerm_storage_account.pet-clinic-storage.primary_blob_endpoint
+    storage_account_uri = azurerm_storage_account.midserver-storage.primary_blob_endpoint
   }
 }

@@ -1,12 +1,12 @@
 # Cluster Name
-variable "cluster_name" {
-  description = "Cluster Name (e.g: srecon25)"
+variable "instance_name" {
+  description = "Instance Name (e.g: srecon25)"
 }
 
 # The public SSH key to use
 variable "public_key_path" {
-  description = "Public SSH Key to use (e.g: ~/.ssh/pet-clinic.pub)"
-  default = "~/.ssh/pet-clinic.pub"
+  description = "Public SSH Key to use (e.g: ~/.ssh/hector.pub)"
+  default = "~/.ssh/hector.pub"
 }
 
 # Resource Group Location

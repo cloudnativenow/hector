@@ -1,11 +1,17 @@
 # Create Unique Resource Group Name
-resource "random_pet" "rg-name" {
-  length = 1
-}
+# resource "random_pet" "rg-name" {
+#   length = 1
+# }
+
+# Create Resource Group
+# resource "azurerm_resource_group" "rg" {
+#   name = "pet-clinic-${random_pet.rg-name.id}-rg"
+#   location  = var.resource_group_location
+# }
 
 # Create Resource Group
 resource "azurerm_resource_group" "rg" {
-  name = "pet-clinic-${random_pet.rg-name.id}-rg"
+  name = "${var.cluster_name}-pet-clinic-rg"
   location  = var.resource_group_location
 }
 

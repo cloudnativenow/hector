@@ -14,5 +14,4 @@ jobs:
     steps:
     - uses: Azure/login@v1.4.6
       with:
-        client-id: "3faf8d5c-78a2-444a-bea2-be436037973b"
-        tenant-id: "8bcff170-9979-491e-8683-d8ced0850bad"
+        creds: ${{ secrets.AZURE_CREDENTIALS }}

@@ -12,8 +12,6 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    - uses: azure/login@v1
+    - uses: Azure/login@v1.4.6
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-    - run: |
-        az webapp list --query "[?state=='Running']"

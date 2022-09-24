@@ -20,6 +20,7 @@ jobs:
       - name: Install Azure CLI
         run: |
           echo "Start az cli install..."
+          set -x # echo on
           sudo apt-get update
           sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
             curl -sL https://packages.microsoft.com/keys/microsoft.asc \

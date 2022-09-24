@@ -17,18 +17,9 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Runs a set of commands using the runners shell
-      - name: Install Azure CLI
-        run: |
-          echo "Start az cli install..."
-          set -x # echo on
-          sudo apt-get update
-          sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
-            curl -sL https://packages.microsoft.com/keys/microsoft.asc \
-          | gpg --dearmor \
-          | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
-          AZ_REPO=$(lsb_release -cs)
-          echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" \
-          | sudo tee /etc/apt/sources.list.d/azure-cli.list
-          sudo apt-get update
-          sudo apt-get install azure-cli
-          az -v
+      - name: Azure CLI script
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.33.1
+          inlineScript: |
+            az -v

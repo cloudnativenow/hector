@@ -17,16 +17,8 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Runs a set of commands using the runners shell
-      - name: Azure CLI script
-        uses: azure/CLI@v1
+      - name: Azure Login
+        uses: azure/login@v1
         with:
-          azcliversion: 2.33.1
-          inlineScript: |
-            # Set Environment Variables using the generated credentials
-            export ARM_TENANT_ID="8bcff170-9979-491e-8683-d8ced0850bad"
-            export ARM_CLIENT_ID="3faf8d5c-78a2-444a-bea2-be436037973b"
-            export ARM_CLIENT_SECRET="FHQ8Q~vZPTuliVAQRSnZrJhKYBZ-qcuugdxcyafU"
-            export ARM_SUBSCRIPTION_ID="0212baad-e8a6-41d3-8d3d-75050f31bf1f"
+          creds: ${{ secrets.AZURE_CREDENTIALS }}      
 
-            # Test Credentials
-            az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID

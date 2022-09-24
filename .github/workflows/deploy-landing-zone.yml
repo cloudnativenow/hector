@@ -12,6 +12,16 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    - uses: azure/login@v1
+    - name: Azure Login
+    uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Azure Commands
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.33.1
+        inlineScript: |
+          az -v
+          az account show
+          az storage -h

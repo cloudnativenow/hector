@@ -24,11 +24,12 @@ jobs:
     - name: Azure Commands
       uses: azure/CLI@v1
       env:
-        INSTANCE_NAME: ${{ github.event.inputs.instanceName }}
+        INSTANCE_NAME: ${{ github.event.inputs.instanceName 
+        RESOURCE_GROUP_NAME: $INSTANCE_NAME-terraform-backend
+        CONTAINER_NAME: tfstate
+        STORAGE_ACCOUNT_NAME: $INSTANCE_NAME
       with:
         azcliversion: 2.33.1
         inlineScript: |
-          echo "Instance Name: $INSTANCE_NAME"
-          az -v
-          az account show
-          az storage -h
+          # Create resource group
+          az group create --name $RESOURCE_GROUP_NAME --location eastus

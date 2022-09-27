@@ -19,9 +19,12 @@ jobs:
         
     - name: Azure Commands
       uses: azure/CLI@v1
+      env:
+        INSTANCE_NAME: "hlasalesdemok231"
       with:
         azcliversion: 2.33.1
         inlineScript: |
+          echo $INSTANCE_NAME
           az -v
           az account show
           az storage -h

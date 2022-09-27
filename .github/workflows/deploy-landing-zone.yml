@@ -31,7 +31,7 @@ jobs:
         echo "RESOURCE_GROUP_NAME=$INSTANCE_NAME-terraform-backend" >> $GITHUB_ENV
         echo "STORAGE_ACCOUNT_NAME=$INSTANCE_NAME" >> $GITHUB_ENV
         echo "CONTAINER_NAME=$CONTAINER_NAME" >> $GITHUB_ENV
-        
+  
     - name: Login to Azure
       uses: azure/login@v1
       with:

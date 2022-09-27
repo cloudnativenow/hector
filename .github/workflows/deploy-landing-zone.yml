@@ -25,9 +25,9 @@ jobs:
       uses: azure/CLI@v1
       env:
         INSTANCE_NAME: ${{ github.event.inputs.instanceName }}
-        RESOURCE_GROUP_NAME: $INSTANCE_NAME-terraform-backend
+        RESOURCE_GROUP_NAME: ${{ env.INSTANCE_NAME }}-terraform-backend
         CONTAINER_NAME: tfstate
-        STORAGE_ACCOUNT_NAME: $INSTANCE_NAME
+        STORAGE_ACCOUNT_NAME: ${{ env.INSTANCE_NAME }}
       with:
         azcliversion: 2.33.1
         inlineScript: |

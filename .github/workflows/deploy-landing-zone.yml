@@ -35,8 +35,9 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v1
       with:
+        azcliversion: 2.33.1
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-       
+
     - name: Create Azure Storage for Terraform
       run: |    
         # Create resource group

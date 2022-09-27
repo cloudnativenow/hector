@@ -25,18 +25,32 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
+    - name: Configure Variables
+      env: 
+        INSTANCE_NAME: ${{ github.event.inputs.instanceName }} 
+        LOCATION: ${{ github.event.inputs.region }}
+        CONTAINER_NAME: tfstate
+      run: |
+       echo "RESOURCE_GROUP_NAME=$INSTANCE_NAME-terraform-backend" >> $GITHUB_ENV
+       echo "STORAGE_ACCOUNT_NAME=$INSTANCE_NAME" >> $GITHUB_ENV
+        
     - name: Create Terraform Backend Azure Storage
       uses: azure/CLI@v1
       with:
         azcliversion: 2.33.1
         inlineScript: |
-          INSTANCE_NAME=${{ github.event.inputs.instanceName }}
-          RESOURCE_GROUP_NAME=$INSTANCE_NAME-terraform-backend
-          CONTAINER_NAME=tfstate
-          STORAGE_ACCOUNT_NAME=$INSTANCE_NAME
           # Create resource group
-          az group create --name $RESOURCE_GROUP_NAME --location ${{ github.event.inputs.region }}
+          az group create --name $RESOURCE_GROUP_NAME --location $LOCATION
+          
           # Create storage account
           az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_ACCOUNT_NAME --sku Standard_LRS --encryption-services blob
+          
           # Create blob container
           az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME
+          
+          # Create Terraform Conf File
+          cat << EOF > backend.conf
+          resource_group_name   = "$RESOURCE_GROUP_NAME"
+          storage_account_name  = "$STORAGE_ACCOUNT_NAME"
+          container_name        = "$CONTAINER_NAME"
+          EOF

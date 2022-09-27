@@ -26,12 +26,13 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
     - name: Configure Variables
+      env:
+        INSTANCE_NAME: ${{ github.event.inputs.instanceName }}
+        LOCATION: ${{ github.event.inputs.region }}
+        CONTAINER_NAME: tfstate
       run: |
-       echo "INSTANCE_NAME=${{ github.event.inputs.instanceName }}" >> $GITHUB_ENV
-       echo "LOCATION=${{ github.event.inputs.region }}" >> $GITHUB_ENV       
-       echo "RESOURCE_GROUP_NAME=$INSTANCE_NAME-terraform-backend" >> $GITHUB_ENV
-       echo "STORAGE_ACCOUNT_NAME=$INSTANCE_NAME" >> $GITHUB_ENV
-       echo "CONTAINER_NAME=tfstate" >> $GITHUB_ENV
+        echo "RESOURCE_GROUP_NAME=$INSTANCE_NAME-terraform-backend" >> $GITHUB_ENV
+        echo "STORAGE_ACCOUNT_NAME=$INSTANCE_NAME" >> $GITHUB_ENV
         
     - name: Create Terraform Backend Azure Storage
       uses: azure/CLI@v1

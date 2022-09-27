@@ -1,0 +1,66 @@
+name: deploy-landing-zone
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      instanceName:
+        description: 'Instance Name'
+        required: true
+      region:
+        description: 'Region'
+        required: true
+        default: "eastus"
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Configure Variables
+      env:
+        INSTANCE_NAME: ${{ github.event.inputs.instanceName }}
+        LOCATION: ${{ github.event.inputs.region }}
+        CONTAINER_NAME: tfstate
+      run: |
+        echo "INSTANCE_NAME=$INSTANCE_NAME" >> $GITHUB_ENV
+        echo "LOCATION=$LOCATION" >> $GITHUB_ENV        
+        echo "RESOURCE_GROUP_NAME=$INSTANCE_NAME-terraform-backend" >> $GITHUB_ENV
+        echo "STORAGE_ACCOUNT_NAME=$INSTANCE_NAME" >> $GITHUB_ENV
+        echo "CONTAINER_NAME=$CONTAINER_NAME" >> $GITHUB_ENV
+        
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Create Azure Storage for Terraform Backend
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.33.1
+        inlineScript: |
+          # Create resource group
+          az group create --name $RESOURCE_GROUP_NAME --location $LOCATION
+
+          # Create storage account
+          az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_ACCOUNT_NAME --sku Standard_LRS --encryption-services blob
+
+          # Create blob container
+          az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME        
+
+    - name: Get Azure Access Key for Terraform
+      run: |
+        # Get Acces Key
+        echo "ARM_ACCESS_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP_NAME --account-name $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)" >> $GITHUB_ENV
+
+    - name: Create Backend Conf File for Terraform
+      run: |
+        # Create Terraform Conf File
+        cat << EOF > backend.conf
+        resource_group_name   = "$RESOURCE_GROUP_NAME"
+        storage_account_name  = "$STORAGE_ACCOUNT_NAME"
+        container_name        = "$CONTAINER_NAME"
+        EOF

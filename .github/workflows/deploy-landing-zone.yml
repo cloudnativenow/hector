@@ -51,14 +51,16 @@ jobs:
           # Create blob container
           az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME
           
-          # Create Terraform Conf File
-          cat << EOF > backend.conf
-          resource_group_name   = "$RESOURCE_GROUP_NAME"
-          storage_account_name  = "$STORAGE_ACCOUNT_NAME"
-          container_name        = "$CONTAINER_NAME"
-          EOF
-
-    - name: Get Azure Access Key
+    - name: Get Azure Access Key for Terraform
       run: |
         # Get Acces Key
-        echo "ARM_ACCESS_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP_NAME --account-name $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)" >> $GITHUB_ENV    
+        echo "ARM_ACCESS_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP_NAME --account-name $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)" >> $GITHUB_ENV
+
+    - name: Create Backend Conf File for Terraform
+      run: |
+        # Create Terraform Conf File
+        cat << EOF > backend.conf
+        resource_group_name   = "$RESOURCE_GROUP_NAME"
+        storage_account_name  = "$STORAGE_ACCOUNT_NAME"
+        container_name        = "$CONTAINER_NAME"
+        EOF

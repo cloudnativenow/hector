@@ -3,7 +3,7 @@
 
 resource "local_file" "inventory" {
  content = templatefile("inventory.template.cfg", {
-    control-public_ip = azurerm_linux_virtual_machine.midserver-vm.public_ip_address
+    midserver-public_ip = azurerm_linux_virtual_machine.midserver-vm.public_ip_address
   }
  )
  filename = "inventory-${azurerm_resource_group.rg.name}.cfg"

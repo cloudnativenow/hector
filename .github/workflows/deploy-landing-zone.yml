@@ -28,7 +28,7 @@ jobs:
       with:
         azcliversion: 2.33.1
         inlineScript: |
-          echo $INSTANCE_NAME
+          echo "Instance Name: $INSTANCE_NAME"
           az -v
           az account show
           az storage -h

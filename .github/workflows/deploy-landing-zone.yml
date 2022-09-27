@@ -33,6 +33,8 @@ jobs:
       run: |
         echo "RESOURCE_GROUP_NAME=$INSTANCE_NAME-terraform-backend" >> $GITHUB_ENV
         echo "STORAGE_ACCOUNT_NAME=$INSTANCE_NAME" >> $GITHUB_ENV
+        echo "LOCATION=$LOCATION" >> $GITHUB_ENV
+        echo "CONTAINER_NAME=$CONTAINER_NAME" >> $GITHUB_ENV
         
     - name: Create Terraform Backend Azure Storage
       uses: azure/CLI@v1

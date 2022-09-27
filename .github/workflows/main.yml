@@ -19,7 +19,11 @@ jobs:
       - name: Run a multi-line script
         env: 
           ENV1: "Env1"
+          ENV2: "Env2"
+          ENV3: ${{ env.ENV1 }}-${{ env.ENV2 }}
         run: |
           echo Add other actions to build,
           echo env1: $ENV1
+          echo env2: $ENV2
+          echo env3: $ENV3
       

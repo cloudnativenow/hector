@@ -46,7 +46,7 @@ jobs:
         resource_group_name   = "$RESOURCE_GROUP_NAME"
         storage_account_name  = "$STORAGE_ACCOUNT_NAME"
         container_name        = "$CONTAINER_NAME"
-        subscription_id       = "${{ secrets.ARM_SUBSCRIPION_ID }}"
+        subscription_id       = "${{ secrets.ARM_SUBSCRIPTION_ID }}"
         tenant_id             = "${{ secrets.ARM_TENANT_ID }}"
         client_id             = "${{ secrets.ARM_CLIENT_ID }}"
         client_secret         = "${{ secrets.ARM_CLIENT_SECRET }}"

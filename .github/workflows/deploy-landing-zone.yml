@@ -71,4 +71,9 @@ jobs:
     - name: Terraform Init
       run: |
         # Initialize Terraform 
-        terraform init -backend-config=backend.conf   
+        terraform init -backend-config=backend.conf
+
+    - name: Terraform Plan
+      run: |
+        # Initialize Terraform 
+        terraform plan -var instance_name=$INSTANCE_NAME

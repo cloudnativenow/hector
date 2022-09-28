@@ -65,7 +65,7 @@ jobs:
     - name: Inject SSH Key
       run: |
         mkdir ~/.ssh
-        cat ${{ secrets.ARM_CLIENT_ID }}" > ~/.ssh/heracles.pub
+        cat ${{ secrets.SSH_PUBLIC_KEY }} > ~/.ssh/heracles.pub
         chmod -R 700 ~/.ssh
         
     - name: Run Terraform

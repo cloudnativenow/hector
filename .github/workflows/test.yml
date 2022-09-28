@@ -1,0 +1,39 @@
+name: test
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Checkout Git Repo
+      uses: actions/checkout@v2
+  
+    - name: Create Backend Conf File for Terraform
+      run: |
+        # Create Terraform Conf File
+        cat << EOF > backend.conf
+        resource_group_name   = "hlasalesdemok231-terraform-backend"
+        storage_account_name  = "hlasalesdemok231"
+        container_name        = "tfstate"
+        EOF
+        
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2.0.0
+      
+    - name: Terraform Init
+      run: |
+        # Initialize Terraform 
+        terraform init -backend-config=backend.conf
+
+    - name: Terraform Plan
+      run: |
+        # Terraform  Plan
+        ARM_ACCESS_KEY="hON8MaJiCHSY+VUng+p37PT15j1EdA5/cuqsiHBGlgp5AHqLxqcMgUp9LXCeCxg1aP5Y7Zfw/Aqt+AStlYoBnQ=="
+        terraform plan -var instance_name=hlasalesdemok231

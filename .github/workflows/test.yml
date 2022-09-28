@@ -2,6 +2,14 @@ name: test
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      instanceName:
+        description: 'Instance Name'
+        required: true
+      region:
+        description: 'Region'
+        required: true
+        default: "eastus"  
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -15,26 +23,39 @@ jobs:
     - name: Checkout Git Repo
       uses: actions/checkout@v2
       
+    - name: Configure Variables
+      env:
+        INSTANCE_NAME: ${{ github.event.inputs.instanceName }}
+        LOCATION: ${{ github.event.inputs.region }}
+        CONTAINER_NAME: tfstate
+      run: |
+        echo "INSTANCE_NAME=$INSTANCE_NAME" >> $GITHUB_ENV
+        echo "LOCATION=$LOCATION" >> $GITHUB_ENV        
+        echo "RESOURCE_GROUP_NAME=$INSTANCE_NAME-terraform-backend" >> $GITHUB_ENV
+        echo "STORAGE_ACCOUNT_NAME=$INSTANCE_NAME" >> $GITHUB_ENV
+        echo "CONTAINER_NAME=$CONTAINER_NAME" >> $GITHUB_ENV
+
+    - name: Azure Login
+      run: |
+        az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
+
     - name: Create Backend Conf File for Terraform
       run: |
         # Create Terraform Conf File
         cat << EOF > backend.conf
-        resource_group_name   = "hlasalesdemok231-terraform-backend"
-        storage_account_name  = "hlasalesdemok231"
-        container_name        = "tfstate"
-        EOF
-        
+        resource_group_name   = "$RESOURCE_GROUP_NAME"
+        storage_account_name  = "$STORAGE_ACCOUNT_NAME"
+        container_name        = "$CONTAINER_NAME"
+        subscription_id       = "${{ secrets.ARM_SUBSCRIPION_ID }}"
+        tenant_id             = "${{ secrets.ARM_TENANT_ID }}"
+        client_id             = "${{ secrets.ARM_CLIENT_ID }}"
+        client_secret         = "${{ secrets.ARM_CLIENT_SECRET }}"
+        EOF            
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2.0.0
 
     - name: Terraform Plan
       run: |
-        # Terraform  Plan
-        export ARM_TENANT_ID="8bcff170-9979-491e-8683-d8ced0850bad"
-        export ARM_CLIENT_ID="3faf8d5c-78a2-444a-bea2-be436037973b"
-        export ARM_CLIENT_SECRET="FHQ8Q~vZPTuliVAQRSnZrJhKYBZ-qcuugdxcyafU"
-        export ARM_SUBSCRIPTION_ID="0212baad-e8a6-41d3-8d3d-75050f31bf1f"
-        # export ARM_ACCESS_KEY="hON8MaJiCHSY+VUng+p37PT15j1EdA5/cuqsiHBGlgp5AHqLxqcMgUp9LXCeCxg1aP5Y7Zfw/Aqt+AStlYoBnQ=="
         az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID   
         terraform init -backend-config=backend.conf
         terraform plan -var instance_name=hlasalesdemok231

@@ -61,7 +61,13 @@ jobs:
     
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2.0.0
-      
+
+    - name: Inject SSH Key
+      run: |
+        mkdir ~/.ssh
+        cat ${{ secrets.ARM_CLIENT_ID }}" > ~/.ssh/heracles.pub
+        chmod -R 700 ~/.ssh
+        
     - name: Run Terraform
       run: |
         # Set Credentials

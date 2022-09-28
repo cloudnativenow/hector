@@ -75,5 +75,5 @@ jobs:
 
     - name: Terraform Plan
       run: |
-        # Initialize Terraform 
+        # Terraform  Plan
         terraform plan -var instance_name=$INSTANCE_NAME

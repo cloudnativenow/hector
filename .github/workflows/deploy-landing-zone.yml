@@ -35,29 +35,20 @@ jobs:
         echo "STORAGE_ACCOUNT_NAME=$INSTANCE_NAME" >> $GITHUB_ENV
         echo "CONTAINER_NAME=$CONTAINER_NAME" >> $GITHUB_ENV
   
-    - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Azure Login
+      run: |
+        az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
 
     - name: Create Azure Storage for Terraform Backend
-      uses: azure/CLI@v1
-      with:
-        azcliversion: 2.33.1
-        inlineScript: |
-          # Create resource group
-          az group create --name $RESOURCE_GROUP_NAME --location $LOCATION
-
-          # Create storage account
-          az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_ACCOUNT_NAME --sku Standard_LRS --encryption-services blob
-
-          # Create blob container
-          az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME        
-
-    - name: Get Azure Access Key for Terraform
       run: |
-        # Get Acces Key
-        echo "ARM_ACCESS_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP_NAME --account-name $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)" >> $GITHUB_ENV
+        # Create resource group
+        az group create --name $RESOURCE_GROUP_NAME --location $LOCATION
+
+        # Create storage account
+        az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_ACCOUNT_NAME --sku Standard_LRS --encryption-services blob
+
+        # Create blob container
+        az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME        
 
     - name: Create Backend Conf File for Terraform
       run: |
@@ -76,7 +67,16 @@ jobs:
         # Initialize Terraform 
         terraform init -backend-config=backend.conf
 
-    - name: Terraform Plan
+    - name: Run Terraform
       run: |
-        # Terraform  Plan
+        # Set Credentials
+        export ARM_CLIENT_ID="${{ secrets.ARM_CLIENT_ID }}"
+        export ARM_CLIENT_SECRET="${{ secrets.ARM_CLIENT_SECRET }}"
+        export ARM_SUBSCRIPTION_ID="${{ secrets.ARM_SUBSCRIPTION_ID }}"
+        export ARM_TENANT_ID="${{ secrets.ARM_TENANT_ID }}"
+
+        # Terraform Init
+        terraform init -backend-config=backend.conf
+
+        # Terraform Plan
         terraform plan -var instance_name=$INSTANCE_NAME

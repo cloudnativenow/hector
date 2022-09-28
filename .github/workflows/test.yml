@@ -47,6 +47,7 @@ jobs:
         storage_account_name  = "$STORAGE_ACCOUNT_NAME"
         container_name        = "$CONTAINER_NAME"
         EOF
+        
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2.0.0
 

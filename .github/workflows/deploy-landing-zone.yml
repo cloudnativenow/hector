@@ -80,4 +80,7 @@ jobs:
         terraform init -backend-config=backend.conf
 
         # Terraform Plan
-        terraform plan -var instance_name=$INSTANCE_NAME
+        # terraform plan -var instance_name=$INSTANCE_NAME
+
+        # Terraform Apply
+        terraform apply -auto-approve -var instance_name=$INSTANCE_NAME

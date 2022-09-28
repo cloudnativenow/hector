@@ -20,6 +20,9 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - name: Checkout Git Repo
+      uses: actions/checkout@v2
+      
     - name: Configure Variables
       env:
         INSTANCE_NAME: ${{ github.event.inputs.instanceName }}

@@ -54,19 +54,14 @@ jobs:
       run: |
         # Create Terraform Conf File
         cat << EOF > backend.conf
-        resource_group_name   = "$RESOURCE_GROUP_NAME"
-        storage_account_name  = "$STORAGE_ACCOUNT_NAME"
-        container_name        = "$CONTAINER_NAME"
+        resource_group_name = "$RESOURCE_GROUP_NAME"
+        storage_account_name = "$STORAGE_ACCOUNT_NAME"
+        container_name = "$CONTAINER_NAME"
         EOF
-        
+    
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2.0.0
       
-    - name: Terraform Init
-      run: |
-        # Initialize Terraform 
-        terraform init -backend-config=backend.conf
-
     - name: Run Terraform
       run: |
         # Set Credentials

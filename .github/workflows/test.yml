@@ -46,15 +46,15 @@ jobs:
         resource_group_name   = "$RESOURCE_GROUP_NAME"
         storage_account_name  = "$STORAGE_ACCOUNT_NAME"
         container_name        = "$CONTAINER_NAME"
-        subscription_id       = "${{ secrets.ARM_SUBSCRIPTION_ID }}"
-        tenant_id             = "${{ secrets.ARM_TENANT_ID }}"
-        client_id             = "${{ secrets.ARM_CLIENT_ID }}"
-        client_secret         = "${{ secrets.ARM_CLIENT_SECRET }}"
         EOF
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2.0.0
 
     - name: Terraform Plan
       run: |
+        export ARM_CLIENT_ID="${{ secrets.ARM_CLIENT_ID }}"
+        export ARM_CLIENT_SECRET="${{ secrets.ARM_CLIENT_SECRET }}"
+        export ARM_SUBSCRIPTION_ID="${{ secrets.ARM_SUBSCRIPTION_ID }}"
+        export ARM_TENANT_ID="${{ secrets.ARM_TENANT_ID }}"
         terraform init -backend-config=backend.conf
-        terraform plan -var instance_name=hlasalesdemok231
+        terraform plan -var instance_name=$INSTANCE_NAME

@@ -44,5 +44,5 @@ jobs:
         export ARM_CLIENT_ID="3faf8d5c-78a2-444a-bea2-be436037973b"
         export ARM_CLIENT_SECRET="FHQ8Q~vZPTuliVAQRSnZrJhKYBZ-qcuugdxcyafU"
         export ARM_SUBSCRIPTION_ID="0212baad-e8a6-41d3-8d3d-75050f31bf1f"
-        ARM_ACCESS_KEY="hON8MaJiCHSY+VUng+p37PT15j1EdA5/cuqsiHBGlgp5AHqLxqcMgUp9LXCeCxg1aP5Y7Zfw/Aqt+AStlYoBnQ=="
+        export ARM_ACCESS_KEY="hON8MaJiCHSY+VUng+p37PT15j1EdA5/cuqsiHBGlgp5AHqLxqcMgUp9LXCeCxg1aP5Y7Zfw/Aqt+AStlYoBnQ=="
         terraform plan -var instance_name=hlasalesdemok231

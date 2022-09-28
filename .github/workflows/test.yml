@@ -50,7 +50,7 @@ jobs:
         tenant_id             = "${{ secrets.ARM_TENANT_ID }}"
         client_id             = "${{ secrets.ARM_CLIENT_ID }}"
         client_secret         = "${{ secrets.ARM_CLIENT_SECRET }}"
-        EOF            
+        EOF
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2.0.0
 

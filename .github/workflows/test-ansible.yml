@@ -20,3 +20,4 @@ jobs:
       - name: Run a multi-line script
         run: |
           sudo -H pip install ansible==2.10.7
+          ansible --version

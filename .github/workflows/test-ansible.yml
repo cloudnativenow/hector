@@ -31,8 +31,6 @@ jobs:
       run: |
         echo "INSTANCE_NAME=$INSTANCE_NAME" >> $GITHUB_ENV
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
     - name: Simulate Terraform
       run: | 
         # Create Terraform Conf File

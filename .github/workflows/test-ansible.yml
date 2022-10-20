@@ -18,6 +18,8 @@ jobs:
     steps:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
+        env: 
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
-          sudo -H pip install ansible==2.10.7
-          ansible --version
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"

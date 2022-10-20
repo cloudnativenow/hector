@@ -26,8 +26,6 @@ jobs:
     - name: Configure Variables
       env:
         INSTANCE_NAME: ${{ github.event.inputs.instanceName }}
-        LOCATION: ${{ github.event.inputs.region }}
-        CONTAINER_NAME: tfstate
       run: |
         echo "INSTANCE_NAME=$INSTANCE_NAME" >> $GITHUB_ENV
 

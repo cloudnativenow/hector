@@ -58,9 +58,5 @@
     -APP_LONG_NAME $(hostname) \
     -NON_ROOT_USER midserver
 
-    # Enable & Run Service
-    systemctl stop mid.service
-    systemctl start mid.service
-
   tags:
     - midserver

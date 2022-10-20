@@ -25,4 +25,5 @@ jobs:
           mkdir -p ~/.ssh/
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/hector
           chmod 600 ~/.ssh/hector
+          ssh-keyscan -H 20.231.22.166 > ~/.ssh/known_hosts
           ssh -t azureuser@20.231.22.166 'ls -la' -i ~/.ssh/hector

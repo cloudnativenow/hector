@@ -47,7 +47,8 @@
 - name: Configure MID Server
   become: yes
   shell: |
-    /opt/servicenow/mid/agent/installer.sh -silent \
+    cd  /opt/servicenow/mid/agent
+    ./installer.sh -silent \
     -INSTANCE_URL {{instance_url}} \
     -MUTUAL_AUTH N \
     -MID_USERNAME {{mid_username}} \

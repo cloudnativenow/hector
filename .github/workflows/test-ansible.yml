@@ -49,6 +49,14 @@ jobs:
         ssh-agent -a $SSH_AUTH_SOCK > /dev/null
         ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
 
+        # Configure Ansible
+        cat << EOF > ~/.ansible.cfg
+        [defaults]
+        interpreter_python=auto_silent
+        deprecation_warnings=false
+        host_key_checking=false
+        EOF
+
         # Run Install MID Server Playbook
         ansible-playbook --user=azureuser -i "inventory-$INSTANCE_NAME-midserver-rg.cfg" ansible/install-midserver.yml \
         -e "instance_url=https://$INSTANCE_NAME.service-now.com" \

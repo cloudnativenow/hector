@@ -59,7 +59,8 @@
     -NON_ROOT_USER midserver
 
     # Enable & Run Service
-    systemctl restart mid.service
+    systemctl stop mid.service
+    systemctl start mid.service
 
   tags:
     - midserver

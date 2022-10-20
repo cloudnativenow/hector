@@ -22,10 +22,8 @@ jobs:
           SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
-          mkdir -p ~/.ssh/
-          ssh-keyscan -H 20.231.22.166 > ~/.ssh/known_hosts
-          # echo "$SSH_PRIVATE_KEY" > ~/.ssh/hector
-          # chmod 600 ~/.ssh/hector
+          # mkdir -p ~/.ssh/
+          # ssh-keyscan -H 20.231.22.166 > ~/.ssh/known_hosts
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"          
           ssh -t azureuser@20.231.22.166 << EOF

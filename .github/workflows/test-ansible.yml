@@ -6,6 +6,10 @@ name: test-ansible
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      instanceName:
+        description: 'Instance Name'
+        required: true  
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -16,16 +20,39 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        env: 
-          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        run: |
-          # mkdir -p ~/.ssh/
-          # ssh-keyscan -H 20.231.22.166 > ~/.ssh/known_hosts
-          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-          ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"          
-          ssh -o StrictHostKeyChecking=no -t azureuser@20.231.22.166 << EOF
-          ls -la
-          EOF
+    - name: Checkout Git Repo
+      uses: actions/checkout@v2    
+
+    - name: Configure Variables
+      env:
+        INSTANCE_NAME: ${{ github.event.inputs.instanceName }}
+        LOCATION: ${{ github.event.inputs.region }}
+        CONTAINER_NAME: tfstate
+      run: |
+        echo "INSTANCE_NAME=$INSTANCE_NAME" >> $GITHUB_ENV
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Simulate Terraform
+      run: | 
+        # Create Terraform Conf File
+        cat << EOF > inventory-$INSTANCE_NAME-midserver-rg.cfg
+        # Mid Server Inventory Template.
+        [midserver]
+        20.231.22.166
+        EOF
+
+    - name: Run Ansible
+      env: 
+        SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock    
+      run: |
+        # Set SSH Agent
+        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+        ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}
+
+        # Run Install MID Server Playbook
+        ansible-playbook --user=azureuser -i "inventory-$INSTANCE_NAME-midserver-rg.cfg" ansible/install-midserver.yml \
+        -e "instance_url=https://$INSTANCE_NAME.service-now.com" \
+        -e "mid_username=midserver" \
+        -e "mid_password=t7xM53yU7MKC"

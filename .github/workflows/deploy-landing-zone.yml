@@ -84,3 +84,18 @@ jobs:
 
         # Terraform Apply
         terraform apply -auto-approve -var instance_name=$INSTANCE_NAME
+
+    - name: Run Ansible
+      env: 
+        SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock    
+      run: |
+        # Set SSH Agent
+        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+        ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}
+
+        # Run Install MID Server Playbook
+        ansible-playbook --user=azureuser -i "inventory-$INSTANCE_NAME-midserver-rg.cfg" ansible/install-midserver.yml \
+        -e "instance_url=https://$INSTANCE_NAME.service-now.com" \
+        -e "mid_username=midserver" \
+        -e "mid_password=t7xM53yU7MKC"

@@ -58,5 +58,8 @@
     -APP_LONG_NAME $(hostname) \
     -NON_ROOT_USER midserver
 
+    # Enable & Run Service
+    service mid start
+
   tags:
     - midserver

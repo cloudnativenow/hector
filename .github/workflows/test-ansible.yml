@@ -60,5 +60,5 @@ jobs:
         # Run Install MID Server Playbook
         ansible-playbook --user=azureuser -i "inventory-$INSTANCE_NAME-midserver-rg.cfg" ansible/install-midserver.yml \
         -e "instance_url=https://$INSTANCE_NAME.service-now.com" \
-        -e "mid_username=midserver" \
-        -e "mid_password=t7xM53yU7MKC"
+        -e "mid_username=${{ secrets.MID_USERNAME }}" \
+        -e "mid_password=${{ secrets.MID_PASSWORD }}"

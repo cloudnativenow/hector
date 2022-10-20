@@ -26,6 +26,6 @@ jobs:
           # ssh-keyscan -H 20.231.22.166 > ~/.ssh/known_hosts
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"          
-          ssh -t azureuser@20.231.22.166 << EOF
+          ssh -o StrictHostKeyChecking=no -t azureuser@20.231.22.166 << EOF
           ls -la
           EOF

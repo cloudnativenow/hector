@@ -59,7 +59,8 @@
     -NON_ROOT_USER midserver
 
     # Enable & Run Service
-    service mid start
+    /opt/servicenow/mid/agent/stop.sh
+    /opt/servicenow/mid/agent/start.sh
 
   tags:
     - midserver

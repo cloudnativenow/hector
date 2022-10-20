@@ -47,7 +47,7 @@ jobs:
       run: |
         # Set SSH Agent
         ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-        ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}
+        ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
 
         # Run Install MID Server Playbook
         ansible-playbook --user=azureuser -i "inventory-$INSTANCE_NAME-midserver-rg.cfg" ansible/install-midserver.yml \

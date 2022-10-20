@@ -59,7 +59,7 @@
     -NON_ROOT_USER midserver
 
     # Enable & Run Service
-    /opt/servicenow/mid/agent/start.sh
+    systemctl restart mid.service
 
   tags:
     - midserver

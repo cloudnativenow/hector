@@ -23,5 +23,6 @@ jobs:
         run: |
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
-          ssh azureuser@20.231.22.166
+          ssh azureuser@20.231.22.166 << EOF
           ls -la
+          EOF
